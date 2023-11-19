@@ -52,3 +52,10 @@ I then installed clang, cmake, gtk3 as in my flutter doctor command they showed 
 ```bash
 sudo apt install clang cmake libgtk-3-dev
 ```
+
+
+Then I executed this line to connect chrome to flutter. Add this line to your bashrc to make it permanent.
+
+```bash
+export CHROME_EXECUTABLE=/opt/google/chrome/google-chrome 
+```
