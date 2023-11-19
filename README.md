@@ -26,9 +26,10 @@ extracted it to HOME directory and then executed
 
 ```bash
 export PATH="$PATH:$HOME/flutter/bin"
+flutter doctor
 ```
 
-Add this line to your bash script to make it permanent. 
+Add the line 1 to your bashrc to make it permanent.
 
 
 I then installed JDK (openjdk)
@@ -42,4 +43,12 @@ I then installed Android Studio from snap
 
 ```bash
 sudo snap install android-studio --classic
+```
+
+
+
+I then installed clang, cmake, gtk3 as in my flutter doctor command they showed missing.
+
+```bash
+sudo apt install clang cmake libgtk-3-dev
 ```
