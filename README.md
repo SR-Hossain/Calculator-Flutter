@@ -54,8 +54,17 @@ sudo apt install clang cmake libgtk-3-dev
 ```
 
 
+
+
+# 20 Nov 2023
+
 Then I executed this line to connect chrome to flutter. Add this line to your bashrc to make it permanent.
 
 ```bash
 export CHROME_EXECUTABLE=/opt/google/chrome/google-chrome 
 ```
+
+
+
+- Android Studio -> Plugins -> Installed Flutter
+- Android Studio -> Tools -> SDK Manager -> SDK Tools -> selected cmdline-tools(latest)
