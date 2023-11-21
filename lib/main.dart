@@ -65,9 +65,9 @@ class _HomePageState extends State<HomePage> {
 
   final List<String> buttons = [
     'C', 'DEL', '%', '/',
-    '9', '8', '7', 'x',
-    '6', '5', '4', '-',
-    '3', '2', '1', '+',
+    '7','8','9', 'x',
+    '4' ,'5' ,'6', '-',
+    '1' ,'2' ,'3', '+',
     '0', '.', 'ANS', '=',
   ];
 
