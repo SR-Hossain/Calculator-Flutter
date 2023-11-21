@@ -4,6 +4,9 @@ import 'package:math_expressions/math_expressions.dart';
 
 void main() => runApp(const Calculator());
 
+
+
+
 class Calculator extends StatelessWidget {
   const Calculator({super.key});
 
@@ -28,6 +31,25 @@ class _HomePageState extends State<HomePage> {
 
   var userQuestion = '';
   var userAnswer = '';
+  var darkMode = false;
+  var darkModeIcon = const Icon(Icons.dark_mode);
+  var lightModeIcon = const Icon(Icons.light_mode);
+  var themeIcon = const Icon(Icons.light_mode);
+  var consoleBG = Colors.blue[70];
+  var gridBG = Colors.blue[50];
+  void changeColor(bool isDarkModeOn){
+    setState(() {
+      darkMode = !darkMode;
+      themeIcon = darkMode?darkModeIcon:lightModeIcon;
+      print(darkMode);
+      if(isDarkModeOn){
+        // consoleBG = 
+        gridBG = Colors.black;
+      }else{
+        gridBG = Colors.blue[50];
+      }
+    });
+  }
 
 
   final List<String> buttons = [
@@ -43,7 +65,18 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      backgroundColor: Colors.deepPurple[100],
+      appBar: AppBar(
+        title: const Text('Calculator'),
+        actions: <Widget>[
+          IconButton(
+            icon: themeIcon,
+            onPressed: () {
+              changeColor(darkMode);
+            } 
+          ),
+        ],
+      ),
+      backgroundColor: consoleBG,
       body: Column(
         children: <Widget>[
           Expanded(
@@ -52,11 +85,11 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Container(
-                    child: Text(userQuestion, style: TextStyle(fontSize: 40)),
                     alignment: Alignment.centerLeft,
+                    child: Text(userQuestion, style: const TextStyle(fontSize: 40),),
                   ),
                   Container(
-                    child: Text(userAnswer),
+                    child: Text(userAnswer, style: TextStyle(fontSize: 50)),
                     alignment: Alignment.centerRight,
                   ),
                 ],
@@ -66,6 +99,7 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             flex: 2,
             child: Container(
+                color: gridBG,
               child: GridView.builder(
                 itemCount: buttons.length,
                 // padding: const EdgeInsets.all(20),
