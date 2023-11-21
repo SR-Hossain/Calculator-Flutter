@@ -31,25 +31,36 @@ class _HomePageState extends State<HomePage> {
 
   var userQuestion = '';
   var userAnswer = '';
-  var darkMode = false;
+  var darkMode = true;
   var darkModeIcon = const Icon(Icons.dark_mode);
   var lightModeIcon = const Icon(Icons.light_mode);
-  var themeIcon = const Icon(Icons.light_mode);
-  var consoleBG = Colors.blue[70];
+  var themeIcon = const Icon(Icons.dark_mode);
+  var consoleBG = Colors.blue[100];
   var gridBG = Colors.blue[50];
+  var fontColor = Colors.black;
+  var buttonColor = Colors.white;
+  var operatorButtonColor = const Color.fromARGB(255, 33, 150, 243);
   void changeColor(bool isDarkModeOn){
     setState(() {
       darkMode = !darkMode;
       themeIcon = darkMode?darkModeIcon:lightModeIcon;
       print(darkMode);
       if(isDarkModeOn){
-        // consoleBG = 
-        gridBG = Colors.black;
+        consoleBG = const Color.fromARGB(255, 41, 38, 50);
+        gridBG = const Color.fromARGB(255, 27, 24, 24);
+        fontColor = Colors.white;
+        buttonColor = Colors.black;
+        operatorButtonColor = const Color.fromARGB(255, 7, 46, 77);
       }else{
         gridBG = Colors.blue[50];
+        consoleBG = Colors.blue[100];
+        fontColor = Colors.black;
+        buttonColor = Colors.white;
+        operatorButtonColor = Colors.blue;
       }
     });
   }
+
 
 
   final List<String> buttons = [
@@ -67,6 +78,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Calculator'),
+        backgroundColor: buttonColor,
+        foregroundColor: fontColor,
         actions: <Widget>[
           IconButton(
             icon: themeIcon,
@@ -76,23 +89,37 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      backgroundColor: consoleBG,
+      backgroundColor: gridBG,
       body: Column(
         children: <Widget>[
           Expanded(
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text(userQuestion, style: const TextStyle(fontSize: 40),),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(40),
+                child: Container(
+                  color: consoleBG,
+                  
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Text(userQuestion, style: TextStyle(fontSize: 40, color: fontColor),),
+                        ),
+                      ),
+                      Container(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Text(userAnswer, style: TextStyle(fontSize: 50, color: fontColor))
+                        ),
+                      ),
+                    ],
                   ),
-                  Container(
-                    child: Text(userAnswer, style: TextStyle(fontSize: 50)),
-                    alignment: Alignment.centerRight,
-                  ),
-                ],
+                ),
               ),
             ),
           ),
@@ -113,26 +140,37 @@ class _HomePageState extends State<HomePage> {
                       ? Colors.red
                       : index == 0
                           ? Colors.green
-                          : purpleWhite(isOperator(buttons[index])),
-                  textColor: whitePurple(isOperator(buttons[index])),
+                          : isOperator(buttons[index])
+                            ? operatorButtonColor
+                            : buttonColor,
+                  textColor: isOperator(buttons[index])
+                              ? Colors.white
+                              : fontColor,
                   buttonTapped: () {
                     if (index == 0) {
                       setState(() {
-                        userQuestion = '';
+                        userQuestion = userAnswer = '';
                       });
                     } else if (index == 1) {
-                      if (userQuestion.isNotEmpty) {
                         setState(() {
-                          userQuestion = userQuestion.substring(
-                              0, userQuestion.length - 1);
+                          if (userQuestion.isNotEmpty) {
+                            if(userQuestion.endsWith('ANS')){
+                              userQuestion = userQuestion.substring(0, userQuestion.length-3);
+                            }else{
+                              userQuestion = userQuestion.substring(
+                                  0, userQuestion.length - 1);
+                            }
+                          } 
                         });
-                      }
                     } else if (index == buttons.length - 1) {
                       setState(() {
                         equalPressed();
                       });
                     } else {
                       setState(() {
+                        if(buttons[index]=='+' && userQuestion.isEmpty){
+                          userQuestion = 'ANS';
+                        }
                         userQuestion += buttons[index];
                       });
                     }
@@ -148,7 +186,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
   void equalPressed() {
-    String finalQuestion = userQuestion.replaceAll('x', '*');
+    String finalQuestion = userQuestion.replaceAll('x', '*').replaceAll('ANS', userAnswer.toString());
     Parser mathParser = Parser();
     Expression expression = mathParser.parse(finalQuestion);
     double answer = expression.evaluate(EvaluationType.REAL, ContextModel());
