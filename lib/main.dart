@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calculator/button.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 void main() => runApp(const Calculator());
 
@@ -25,8 +26,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  var userQuestion = '453';
-  var userAnswer = '234';
+  var userQuestion = '';
+  var userAnswer = '';
 
 
   final List<String> buttons = [
@@ -50,9 +51,14 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Container(child: Text(userQuestion, style: TextStyle(fontSize: 40)), alignment: Alignment.centerLeft,),
-                  Container(child: Text(userAnswer), alignment: Alignment.centerRight,),
-
+                  Container(
+                    child: Text(userQuestion, style: TextStyle(fontSize: 40)),
+                    alignment: Alignment.centerLeft,
+                  ),
+                  Container(
+                    child: Text(userAnswer),
+                    alignment: Alignment.centerRight,
+                  ),
                 ],
               ),
             ),
@@ -63,12 +69,43 @@ class _HomePageState extends State<HomePage> {
               child: GridView.builder(
                 itemCount: buttons.length,
                 // padding: const EdgeInsets.all(20),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4, /*mainAxisSpacing: 10, crossAxisSpacing: 10*/),
-                itemBuilder: (BuildContext context, int index) => MyButton(buttonText: buttons[index], color: index==1?Colors.red : index==0?Colors.green: purpleWhite(isOperator(buttons[index])), textColor: whitePurple(isOperator(buttons[index]))),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount:
+                      4, /*mainAxisSpacing: 10, crossAxisSpacing: 10*/
+                ),
+                itemBuilder: (BuildContext context, int index) => MyButton(
+                  buttonText: buttons[index],
+                  color: index == 1
+                      ? Colors.red
+                      : index == 0
+                          ? Colors.green
+                          : purpleWhite(isOperator(buttons[index])),
+                  textColor: whitePurple(isOperator(buttons[index])),
+                  buttonTapped: () {
+                    if (index == 0) {
+                      setState(() {
+                        userQuestion = '';
+                      });
+                    } else if (index == 1) {
+                      if (userQuestion.isNotEmpty) {
+                        setState(() {
+                          userQuestion = userQuestion.substring(
+                              0, userQuestion.length - 1);
+                        });
+                      }
+                    } else if (index == buttons.length - 1) {
+                      setState(() {
+                        equalPressed();
+                      });
+                    } else {
+                      setState(() {
+                        userQuestion += buttons[index];
+                      });
+                    }
+                  },
+                ),
               ),
-
-            ), 
-            
+            ),
           ),
         ],
       ),
@@ -76,7 +113,15 @@ class _HomePageState extends State<HomePage> {
       // body: Column(children: [],)
     );
   }
+  void equalPressed() {
+    String finalQuestion = userQuestion.replaceAll('x', '*');
+    Parser mathParser = Parser();
+    Expression expression = mathParser.parse(finalQuestion);
+    double answer = expression.evaluate(EvaluationType.REAL, ContextModel());
+    userAnswer = answer.toString();
+  }
 }
+
 
 gridWithFixedColumn(int x) =>
     SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: x);
