@@ -13,7 +13,8 @@ var gridBG = Colors.blue[50];
 var fontColor = Colors.black;
 var buttonColor = Colors.white;
 var operatorButtonColor = const Color.fromARGB(255, 33, 150, 243);
-gridDelegatewithFixedColumns(x) => SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: x);
+gridDelegatewithFixedColumns(x) =>
+    SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: x);
 final List<String> buttons = [
   'C',
   'DEL',
@@ -136,46 +137,45 @@ class _HomePageState extends State<HomePage> {
     var buttonSection = Expanded(
       flex: 2,
       child: GridView.builder(
-        itemCount: buttons.length,
-        gridDelegate: gridDelegatewithFixedColumns(4),
-        itemBuilder: (BuildContext context, int index) {
-          return MyButton(
-            buttonText: buttons[index],
-            color: getButtonColor(index),
-            textColor: isOperator(buttons[index]) ? Colors.white : fontColor,
-            buttonTapped: () {
-              if (index == 0) {
-                setState(() {
-                  userQuestion = userAnswer = '';
-                });
-              } else if (index == 1) {
-                setState(() {
-                  if (userQuestion.isNotEmpty) {
-                    if (userQuestion.endsWith('ANS')) {
-                      userQuestion =
-                          userQuestion.substring(0, userQuestion.length - 3);
-                    } else {
-                      userQuestion =
-                          userQuestion.substring(0, userQuestion.length - 1);
+          itemCount: buttons.length,
+          gridDelegate: gridDelegatewithFixedColumns(4),
+          itemBuilder: (BuildContext context, int index) {
+            return MyButton(
+              buttonText: buttons[index],
+              color: getButtonColor(index),
+              textColor: isOperator(buttons[index]) ? Colors.white : fontColor,
+              buttonTapped: () {
+                if (index == 0) {
+                  setState(() {
+                    userQuestion = userAnswer = '';
+                  });
+                } else if (index == 1) {
+                  setState(() {
+                    if (userQuestion.isNotEmpty) {
+                      if (userQuestion.endsWith('ANS')) {
+                        userQuestion =
+                            userQuestion.substring(0, userQuestion.length - 3);
+                      } else {
+                        userQuestion =
+                            userQuestion.substring(0, userQuestion.length - 1);
+                      }
                     }
-                  }
-                });
-              } else if (index == buttons.length - 1) {
-                setState(() {
-                  equalPressed();
-                });
-              } else {
-                setState(() {
-                  if (buttons[index] == '+' && userQuestion.isEmpty) {
-                    userQuestion = 'ANS';
-                  }
-                  userQuestion += buttons[index];
-                });
-              }
-            },
-          );
-        }
-      ),
+                  });
+                } else if (index == buttons.length - 1) {
+                  setState(() {
+                    equalPressed();
+                  });
+                } else {
+                  setState(() {
+                    if (buttons[index] == '+' && userQuestion.isEmpty) {
+                      userQuestion = 'ANS';
+                    }
+                    userQuestion += buttons[index];
+                  });
+                }
+              },
+            );
+          }),
     );
 
     return Scaffold(
