@@ -4,9 +4,6 @@ import 'package:math_expressions/math_expressions.dart';
 
 void main() => runApp(const Calculator());
 
-
-
-
 class Calculator extends StatelessWidget {
   const Calculator({super.key});
 
@@ -24,11 +21,10 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-
   var userQuestion = '';
   var userAnswer = '';
   var darkMode = true;
@@ -40,18 +36,19 @@ class _HomePageState extends State<HomePage> {
   var fontColor = Colors.black;
   var buttonColor = Colors.white;
   var operatorButtonColor = const Color.fromARGB(255, 33, 150, 243);
-  void changeColor(bool isDarkModeOn){
+
+  void changeColor(bool isDarkModeOn) {
     setState(() {
-      darkMode = !darkMode;
-      themeIcon = darkMode?darkModeIcon:lightModeIcon;
-      print(darkMode);
-      if(isDarkModeOn){
+      darkMode = isDarkModeOn;
+      themeIcon = darkMode ? darkModeIcon : lightModeIcon;
+
+      if (isDarkModeOn) {
         consoleBG = const Color.fromARGB(255, 41, 38, 50);
         gridBG = const Color.fromARGB(255, 27, 24, 24);
         fontColor = Colors.white;
         buttonColor = Colors.black;
         operatorButtonColor = const Color.fromARGB(255, 7, 46, 77);
-      }else{
+      } else {
         gridBG = Colors.blue[50];
         consoleBG = Colors.blue[100];
         fontColor = Colors.black;
@@ -61,20 +58,31 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
-
   final List<String> buttons = [
-    'C', 'DEL', '%', '/',
-    '7','8','9', 'x',
-    '4' ,'5' ,'6', '-',
-    '1' ,'2' ,'3', '+',
-    '0', '.', 'ANS', '=',
+    'C',
+    'DEL',
+    '%',
+    '/',
+    '7',
+    '8',
+    '9',
+    'x',
+    '4',
+    '5',
+    '6',
+    '-',
+    '1',
+    '2',
+    '3',
+    '+',
+    '0',
+    '.',
+    'ANS',
+    '=',
   ];
-
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: const Text('Calculator'),
@@ -83,9 +91,7 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           IconButton(
             icon: themeIcon,
-            onPressed: () {
-              changeColor(darkMode);
-            } 
+            onPressed: () => changeColor(darkMode),
           ),
         ],
       ),
@@ -99,7 +105,6 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.circular(40),
                 child: Container(
                   color: consoleBG,
-                  
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -107,14 +112,20 @@ class _HomePageState extends State<HomePage> {
                         alignment: Alignment.centerLeft,
                         child: Padding(
                           padding: const EdgeInsets.all(12),
-                          child: Text(userQuestion, style: TextStyle(fontSize: 40, color: fontColor),),
+                          child: Text(
+                            userQuestion,
+                            style: TextStyle(fontSize: 40, color: fontColor),
+                          ),
                         ),
                       ),
                       Container(
                         alignment: Alignment.centerRight,
                         child: Padding(
                           padding: const EdgeInsets.all(20),
-                          child: Text(userAnswer, style: TextStyle(fontSize: 50, color: fontColor))
+                          child: Text(
+                            userAnswer,
+                            style: TextStyle(fontSize: 50, color: fontColor),
+                          ),
                         ),
                       ),
                     ],
@@ -126,7 +137,7 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             flex: 2,
             child: Container(
-                color: gridBG,
+              color: gridBG,
               child: GridView.builder(
                 itemCount: buttons.length,
                 // padding: const EdgeInsets.all(20),
@@ -141,34 +152,34 @@ class _HomePageState extends State<HomePage> {
                       : index == 0
                           ? Colors.green
                           : isOperator(buttons[index])
-                            ? operatorButtonColor
-                            : buttonColor,
-                  textColor: isOperator(buttons[index])
-                              ? Colors.white
-                              : fontColor,
+                              ? operatorButtonColor
+                              : buttonColor,
+                  textColor:
+                      isOperator(buttons[index]) ? Colors.white : fontColor,
                   buttonTapped: () {
                     if (index == 0) {
                       setState(() {
                         userQuestion = userAnswer = '';
                       });
                     } else if (index == 1) {
-                        setState(() {
-                          if (userQuestion.isNotEmpty) {
-                            if(userQuestion.endsWith('ANS')){
-                              userQuestion = userQuestion.substring(0, userQuestion.length-3);
-                            }else{
-                              userQuestion = userQuestion.substring(
-                                  0, userQuestion.length - 1);
-                            }
-                          } 
-                        });
+                      setState(() {
+                        if (userQuestion.isNotEmpty) {
+                          if (userQuestion.endsWith('ANS')) {
+                            userQuestion = userQuestion.substring(
+                                0, userQuestion.length - 3);
+                          } else {
+                            userQuestion = userQuestion.substring(
+                                0, userQuestion.length - 1);
+                          }
+                        }
+                      });
                     } else if (index == buttons.length - 1) {
                       setState(() {
                         equalPressed();
                       });
                     } else {
                       setState(() {
-                        if(buttons[index]=='+' && userQuestion.isEmpty){
+                        if (buttons[index] == '+' && userQuestion.isEmpty) {
                           userQuestion = 'ANS';
                         }
                         userQuestion += buttons[index];
@@ -185,8 +196,11 @@ class _HomePageState extends State<HomePage> {
       // body: Column(children: [],)
     );
   }
+
   void equalPressed() {
-    String finalQuestion = userQuestion.replaceAll('x', '*').replaceAll('ANS', userAnswer.toString());
+    String finalQuestion = userQuestion
+        .replaceAll('x', '*')
+        .replaceAll('ANS', userAnswer.toString());
     Parser mathParser = Parser();
     Expression expression = mathParser.parse(finalQuestion);
     double answer = expression.evaluate(EvaluationType.REAL, ContextModel());
@@ -194,10 +208,8 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-
 gridWithFixedColumn(int x) =>
     SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: x);
-
 
 Color whitePurple(bool x) => x ? Colors.white : Colors.deepPurple;
 Color purpleWhite(bool x) => !x ? Colors.white : Colors.deepPurple;
